@@ -1,19 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { fetchItems, deleteItem } from "../../services/api";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Button, Card, CardContent, Typography, Grid } from "@mui/material";
+import { useItemsController } from "./ItemsController";
 
-const Home = () => {
-  const [items, setItems] = useState([]);
-
-  useEffect(() => {
-    loadItems();
-  }, []);
-
-  const loadItems = async () => {
-    const data = await fetchItems();
-    setItems(data);
-  };
+const ItemsList = () => {
+  const { items, handleDelete } = useItemsController();
 
   return (
     <div>
@@ -40,7 +31,7 @@ const Home = () => {
                   variant="contained"
                   color="error"
                   sx={{ mt: 1 }}
-                  onClick={() => deleteItem(item.id).then(loadItems)}
+                  onClick={() => handleDelete(item.id)}
                 >
                   Xóa
                 </Button>
@@ -53,4 +44,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default ItemsList;

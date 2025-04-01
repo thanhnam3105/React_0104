@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TestWebNetCore.Data;
+using TestWebNetCore.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 // nam.pt - Cấu hình DbContext sử dụng PostgreSQL - START
@@ -11,6 +12,7 @@ builder.Services.AddCors(options =>
                         .AllowAnyMethod()  // Cho phép tất cả các phương thức (GET, POST, PUT, DELETE)
                         .AllowAnyHeader()); // Cho phép tất cả các headers
 });
+builder.Services.AddSignalR();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -25,6 +27,10 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 app.UseCors("AllowAll"); // nam.pt Kích hoạt CORS
 app.MapControllers(); // nam.pt
+app.UseRouting();
+app.UseEndpoints(endpoints => {
+    endpoints.MapHub<ItemsHub>("/itemHub");
+});
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
